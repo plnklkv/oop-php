@@ -4,6 +4,7 @@ spl_autoload_register(function (string $className) {
     require_once __DIR__ . '/../src/' . str_replace('\\', '/', $className) . '.php';
 });
 
+/*
 echo '<br>1 Неймспейсы и автозагрузка в PHP <br>';
 $author = new \MyProject\Models\Users\User('Иван');
 $article = new \MyProject\Models\Articles\Article('Заголовок', 'Текст', $author);
@@ -19,7 +20,7 @@ if (!empty($_GET['name'])) {
     $controller->main();
 }
 
-echo '<br><br>3 Фронт-контроллер и роутинг в PHP <br>';
+echo '<br><br>3 Фронт-контроллер и роутинг в PHP <br>';*/
 $route = $_GET['route'] ?? '';
 $routes = require __DIR__ . '/../src/routes.php';
 
