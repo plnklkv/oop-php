@@ -3,7 +3,7 @@
 namespace MyProject\Models\Articles;
 
 use MyProject\Models\ActiveRecordEntity;
-use MyProject\Models\Users\User;
+    use MyProject\Models\Users\User;
 
 class Article extends ActiveRecordEntity
 {

@@ -5,6 +5,7 @@ namespace MyProject\Controllers;
 use MyProject\Models\Articles\Article;
 use MyProject\View\View;
 use MyProject\Models\Users\User;
+use MyProject\Exceptions\NotFoundException;
 
 class ArticlesController
 {
@@ -25,8 +26,7 @@ class ArticlesController
         $article = Article::getById($articleId);
 
         if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], 404);
-            return;
+            throw new NotFoundException();
         }
 
         $this->view->renderHtml('articles/view.php', [
@@ -39,8 +39,7 @@ class ArticlesController
         $article = Article::getById($articleId);
 
         if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], 404);
-            return;
+            throw new NotFoundException();
         }
 
         $article->setName('Новое название статьи');
@@ -68,7 +67,7 @@ class ArticlesController
         $article = Article::getById($articleId);
 
         if($article == null) {
-            $this->view->renderHtml('errors/404.php', [], 404);
+            throw new NotFoundException();
         } else {
             $article->delete();
             echo 'Статья удалена.';
