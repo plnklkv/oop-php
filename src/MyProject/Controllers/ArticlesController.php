@@ -4,6 +4,7 @@ namespace MyProject\Controllers;
 
 use MyProject\Models\Articles\Article;
 use MyProject\View\View;
+use MyProject\Models\Users\User;
 
 class ArticlesController
 {
@@ -48,14 +49,17 @@ class ArticlesController
         var_dump($article);
     }
 
-    public function add():void
+    public function add(): void
     {
+        $author = User::getById(1);
+
         $article = new Article();
-        $article->setName('Новая статья 3');
-        $article->setText('Новый текст 3');
-        $article->setAuthorId('1');
-        $article->setCreatedAt(date('Y-m-d H:i:s'));
+        $article->setAuthor($author);
+        $article->setName('Новое название статьи 2');
+        $article->setText('Новый текст статьи 2');
 
         $article->save();
+
+        var_dump($article);
     }
 }

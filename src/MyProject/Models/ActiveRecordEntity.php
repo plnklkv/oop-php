@@ -91,22 +91,38 @@ abstract class ActiveRecordEntity
 
     private function insert(array $mappedProperties): void
     {
-        $params2values = [];
+        $filteredProperties = array_filter($mappedProperties);
+
         $columns = [];
-        $params = [];
-        $values = [];
-        $index = 1;
-        foreach ($mappedProperties as $column => $value) {
-            $params2values[':param' . $index] = $value;
-            $columns[] = $column;
-            $values[] = $value;
-            $params[] = ':param' . $index;
-            $index++;
+        foreach ($filteredProperties as $columnName => $value) {
+            $columns[] = '`' . $columnName . '`';
+            $paramName = ':' . $columnName;
+            $paramsNames[] = $paramName;
+            $params2values[$paramName] = $value;
         }
 
-        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . implode(', ', $columns)
-            . ') VALUES (' . implode(', ', $params) . ')';
+        $columnsViaSemicolon = implode(', ', $columns);
+        $paramsNamesViaSemicolon = implode(', ', $paramsNames);
+        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . $columnsViaSemicolon
+            . ') VALUES (' . $paramsNamesViaSemicolon . ');';
+
+        var_dump($sql);
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
+        $this->id = $db->getLastInsertId();
+        $this->refresh();
+    }
+
+    private function refresh(): void
+    {
+        $objectFromDb = static::getById($this->id);
+        $reflector = new \ReflectionObject($objectFromDb);
+        $properties = $reflector->getProperties();
+
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $propertyName = $property->getName();
+            $this->$propertyName = $property->getValue($objectFromDb);
+        }
     }
 }
